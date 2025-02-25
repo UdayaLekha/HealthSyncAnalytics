@@ -11,11 +11,8 @@ from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-# ------------------------------------------------------------------------------
 # Database Setup
-# ------------------------------------------------------------------------------
 
-# Replace this with your actual PostgreSQL connection string.
 DATABASE_URL = (
     "postgresql+asyncpg://health_db_scy8_user:dBza7ktDGvrHkUMwREPHzraQ4BGv3dsH@"
     "dpg-cuunb823esus73aaskng-a.oregon-postgres.render.com/health_db_scy8"
@@ -36,9 +33,7 @@ class HealthMetric(Base):
     steps = Column(Integer)
     calories = Column(Float)
 
-# ------------------------------------------------------------------------------
 # Pydantic Schemas
-# ------------------------------------------------------------------------------
 
 class HealthMetricIn(BaseModel):
     """
@@ -58,18 +53,18 @@ class AggregatedMetrics(BaseModel):
     total_steps: int
     total_calories: float
 
-# ------------------------------------------------------------------------------
+
 # Async Database Engine and Session Setup
-# ------------------------------------------------------------------------------
+
 
 # Create an asynchronous engine for the database.
 engine = create_async_engine(DATABASE_URL, echo=True)
 # SessionLocal is our async session maker.
 SessionLocal = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
-# ------------------------------------------------------------------------------
+
 # FastAPI Application Setup
-# ------------------------------------------------------------------------------
+
 
 app = FastAPI(title="Real-Time Health Metrics API")
 
@@ -81,9 +76,8 @@ async def on_startup():
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.create_all)
 
-# ------------------------------------------------------------------------------
+
 # API Endpoints
-# ------------------------------------------------------------------------------
 
 @app.post("/ingest")
 async def ingest_data(metrics: List[HealthMetricIn]):
